@@ -24,7 +24,6 @@ CheckVar3 = StringVar()
 CheckVar4 = StringVar()
 CheckVar5 = StringVar()
 
-
 desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') 
 
 def API_url():
@@ -35,12 +34,12 @@ def API_url():
 
 
 def API_language():
-    #get language from Form
+    #get language from form
     return Lb1.get(Lb1.curselection())
      
 
 def API_columns():
-    #dynamicaly create string used in API to extract columns selected in Form
+    #dynamicaly create string used in API to extract columns selected in form
     api_columns = "[str(question[\'title\'])"
     list_var = ['CheckVar' + str(i) for i in range(1,6)]
     for var in list_var:
@@ -52,7 +51,7 @@ def API_columns():
 
 
 def Tree_columns():
-    #create list of selected columns in Form
+    #create list of selected columns in form
     tree_columns = ['title']
     list_var = ['CheckVar' + str(i) for i in range(1,6)]
     for var in list_var:
@@ -66,6 +65,7 @@ def API_Connect():
     
     url = API_url()
     columns = API_columns()
+    #tree_cols = Tree_columns()
     query_result = []
 
     r = requests.get(url)
@@ -81,13 +81,17 @@ def API_Connect():
                  #CLASS
 ####################################################
 
-class API_form:
+class API_content:
 
     def __init__(self):
         self.api_result = []
         self.language = ''
+        self.txt_query_result = ''
+        self.pdf_query_result = ''
+        self.tree_columns = []
+
  
-    def parse_api_result(self):
+    def get_txt_query_result(self):
         #change bool to str
         changes = { True: "True",False: "False"}
         to_string = []
@@ -99,26 +103,27 @@ class API_form:
         return [",".join( map( str, x ) ) for x in to_string]
         
 
-    def set_txt_output(self):
+    def set_txt_query_result:
+        
 
-        return '\n'.join(self.parse_api_result())
 
+    def API_tree(self):   
 
-    def api_content(self):   
-       
         tree_api['columns'] = Tree_columns()
+
         url = API_url()
         self.language = API_language() 
         self.api_result = API_Connect()
-        tree_columns =  Tree_columns()
-     
+        self.txt_query_result = '\n'.join(self.get_txt_query_result())
+        self.pdf_query_result = self.get_txt_query_result()
+        self.tree_columns =  Tree_columns()
 
         #create treeview widget
         # fantome column in treeview
         tree_api.column('#0', width=0, stretch=NO)
         tree_api.heading('#0', text='')
 
-        for column in tree_columns:
+        for column in self.tree_columns:
             if column == 'title':
                 tree_api.column(column, width=250, anchor=W)
                 tree_api.heading(column, text=column)
@@ -147,11 +152,9 @@ class API_form:
 
 
     def Save_As(self):
-
-        txt_output = self.set_txt_output()
-        if len(txt_output) > 0:
+        if len(self.txt_query_result) > 0:
             with open(desktop + '\\test.txt', 'w', encoding='utf-8') as f:
-                f.write(str(txt_output))
+                f.write(str(self.txt_query_result))
                 msgbox.showinfo('saving data', 'Data successfuly saved')
         else:
             msgbox.showinfo('saving data', 'No data for saving')
@@ -159,8 +162,7 @@ class API_form:
 
     def print_PDF(self):
 
-        pdf_output = self.parse_api_result()
-        if len(pdf_output) > 0:
+        if len(self.pdf_query_result) > 0:
 
             line = 3
             pdf = FPDF()
@@ -172,7 +174,7 @@ class API_form:
             pdf.cell(200, 10, txt = "Data from https://api.stackexchange.com",ln = 2, align = 'C', link='https://stackoverflow.com/')
 
             pdf.set_font("Arial", size = 10)
-            for res in pdf_output:
+            for res in self.pdf_query_result:
                 pdf.cell(200, 10, txt = res, ln = line, align = 'L')
                 line += 1
 
@@ -187,14 +189,13 @@ class API_form:
         
         mail_pass = get_pass.get_password()
         mail_user = 'alesventus@gmail.com'
-        mail_output = self.set_txt_output()
 
-        if len(mail_output) > 0:
+        if len(self.txt_query_result) > 0:
             msg = EmailMessage()
             msg['From'] = 'training team Ales'
             msg['To'] = 'alesventus@gmail.com'
             msg['Subject'] = self.language + ' results:'
-            msg.set_content(mail_output)
+            msg.set_content(self.txt_query_result)
 
             server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
             server.login(mail_user, mail_pass)
@@ -210,13 +211,13 @@ class API_form:
                  #end CLASS
 ####################################################
 
-api_obj = API_form()
+api_obj = API_content()
 
 tree_api = ttk.Treeview(window)
 fr_menu = tk.Frame(window, relief=tk.RAISED)
 lbl_option = tk.Label(fr_menu, text="select language:")
 lbl_column = tk.Label(fr_menu, text="output columns:")
-btn_result = tk.Button(fr_menu, text="API results", width = 25, command = api_obj.api_content)
+btn_result = tk.Button(fr_menu, text="API results", width = 25, command = api_obj.API_tree)
 btn_save = tk.Button(fr_menu, text="Save As...", command = api_obj.Save_As)
 btn_print = tk.Button(fr_menu, text="Print to PDF", command = api_obj.print_PDF)
 btn_email = tk.Button(fr_menu, text="Email results", command = api_obj.send_email)
