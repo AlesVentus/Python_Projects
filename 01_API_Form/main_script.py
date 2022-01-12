@@ -8,7 +8,9 @@ from fpdf import FPDF
 import smtplib
 from email.message import EmailMessage
 import itertools
-from Setup import get_pass
+#from Setup import get_pass
+from Email_Setup import Email_Setting
+from Email_Setup import Read_json
 
 
 window = tk.Tk()
@@ -18,14 +20,31 @@ window.rowconfigure(0, minsize=200, weight=1)
 window.columnconfigure(1, minsize=800, weight=1)
 
 
+def setup_email():
+    Email_Setting.email_frm()
+
+
+menubar = Menu(window)
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="Email Setup", command=setup_email)
+filemenu.add_separator()
+filemenu.add_command(label="Exit", command=window.quit)
+menubar.add_cascade(label="Setup", menu=filemenu)
+
+helpmenu = Menu(menubar, tearoff=0)
+helpmenu.add_command(label="About...", command=setup_email)
+menubar.add_cascade(label="Help", menu=helpmenu)
+
+window.config(menu=menubar)
+
 CheckVar1 = StringVar()
 CheckVar2 = StringVar()
 CheckVar3 = StringVar()
 CheckVar4 = StringVar()
 CheckVar5 = StringVar()
 
-
 desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') 
+
 
 def API_url():
     #get url from form
@@ -180,24 +199,27 @@ class API_form:
             msgbox.showinfo('print PDF', 'Data successfuly printed')
 
         else:
-            msgbox.showinfo('print PDF', 'No data for PDF')
+            pass
 
 
     def send_email(self):
         
-        mail_pass = get_pass.get_password()
-        mail_user = 'alesventus@gmail.com'
+        #mail_pass = get_pass.get_password()
+        #mail_user = 'alesventus@gmail.com'
         mail_output = self.set_txt_output()
+
+        # json from module 
+        content_account, content_from_mail, content_send_to, content_smtp_server,content_smtp_password  = Read_json.get_json_data()
 
         if len(mail_output) > 0:
             msg = EmailMessage()
-            msg['From'] = 'training team Ales'
-            msg['To'] = 'alesventus@gmail.com'
+            msg['From'] = content_from_mail
+            msg['To'] = content_send_to
             msg['Subject'] = self.language + ' results:'
             msg.set_content(mail_output)
 
-            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-            server.login(mail_user, mail_pass)
+            server = smtplib.SMTP_SSL(content_smtp_server, 465)
+            server.login(content_account, content_smtp_password)
             server.send_message(msg)
 
             server.quit()

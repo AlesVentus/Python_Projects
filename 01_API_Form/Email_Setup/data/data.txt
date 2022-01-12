@@ -1,0 +1,1 @@
+{"email_setting": [{"account": "alesventus@gmail.com", "from_mail": "this is from email setup - test 888", "send_to": "alesventus@gmail.com", "smtp_server": "smtp.gmail.com", "smtp_password": "ggapwmhdodpuixio"}]}
