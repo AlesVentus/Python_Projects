@@ -1,3 +1,4 @@
+from distutils.log import error
 import tkinter as tk
 import tkinter.messagebox as msgbox
 from tkinter import *
@@ -11,17 +12,18 @@ import itertools
 #from Setup import get_pass
 from Email_Setup import Email_Setting
 from Email_Setup import Read_json
+import sys
 
+desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') 
+
+def setup_email():
+    Email_Setting.email_frm()
 
 window = tk.Tk()
 window.geometry("1000x400")
 window.title("API form")
 window.rowconfigure(0, minsize=200, weight=1)
 window.columnconfigure(1, minsize=800, weight=1)
-
-
-def setup_email():
-    Email_Setting.email_frm()
 
 
 menubar = Menu(window)
@@ -42,8 +44,6 @@ CheckVar2 = StringVar()
 CheckVar3 = StringVar()
 CheckVar4 = StringVar()
 CheckVar5 = StringVar()
-
-desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') 
 
 
 def API_url():
@@ -124,13 +124,15 @@ class API_form:
 
 
     def api_content(self):   
-       
-        tree_api['columns'] = Tree_columns()
-        url = API_url()
-        self.language = API_language() 
-        self.api_result = API_Connect()
-        tree_columns =  Tree_columns()
-     
+        
+        try:
+            tree_api['columns'] = Tree_columns()
+            url = API_url()
+            self.language = API_language() 
+            self.api_result = API_Connect()
+            tree_columns =  Tree_columns()
+        except:
+            msgbox.showinfo("Oops!",  str(sys.exc_info()[0]) + "occurred.")     
 
         #create treeview widget
         # fantome column in treeview
@@ -199,13 +201,11 @@ class API_form:
             msgbox.showinfo('print PDF', 'Data successfuly printed')
 
         else:
-            pass
+            msgbox.showinfo('print data o PDF', 'No data for printing to PDF')
 
 
     def send_email(self):
         
-        #mail_pass = get_pass.get_password()
-        #mail_user = 'alesventus@gmail.com'
         mail_output = self.set_txt_output()
 
         # json from module 

@@ -1,1 +1,1 @@
-{"email_setting": [{"account": "alesventus@gmail.com", "from_mail": "this is from email setup - test 888", "send_to": "alesventus@gmail.com", "smtp_server": "smtp.gmail.com", "smtp_password": "ggapwmhdodpuixio"}]}
+{"email_setting": [{"account": "alesventus@gmail.com", "from_mail": "satan ta vola k sebe - prijmi satana!", "send_to": "alesventus@gmail.com,vidrushka@gmail.com", "smtp_server": "smtp.gmail.com", "smtp_password": "ggapwmhdodpuixio"}]}
