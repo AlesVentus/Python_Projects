@@ -46,16 +46,16 @@ CheckVar4 = StringVar()
 CheckVar5 = StringVar()
 
 
-def API_url():
+def API_url(language):
     #get url from form
-    lang = Lb1.get(Lb1.curselection())
+    lang = language
     url = "https://api.stackexchange.com//2.3/questions?order=desc&sort=creation&tagged=" + lang + "&site=stackoverflow&pagesize=10"
     return url
 
 
-def API_language():
+def API_language(language):
     #get language from Form
-    return Lb1.get(Lb1.curselection())
+    return language
      
 
 def API_columns():
@@ -83,7 +83,7 @@ def Tree_columns():
 
 def API_Connect():
     
-    url = API_url()
+    url = API_url(lb_Language.get(lb_Language.curselection()))
     columns = API_columns()
     query_result = []
 
@@ -127,8 +127,8 @@ class API_form:
         
         try:
             tree_api['columns'] = Tree_columns()
-            url = API_url()
-            self.language = API_language() 
+            url = API_url(lb_Language.get(lb_Language.curselection()))
+            self.language = API_language(lb_Language.get(lb_Language.curselection())) 
             self.api_result = API_Connect()
             tree_columns =  Tree_columns()
         except:
@@ -244,11 +244,11 @@ btn_print = tk.Button(fr_menu, text="Print to PDF", command = api_obj.print_PDF)
 btn_email = tk.Button(fr_menu, text="Email results", command = api_obj.send_email)
 
 
-Lb1 = Listbox(fr_menu, height=3,selectmode='SINGLE')
-Lb1.insert(1, "Python")
-Lb1.insert(2, "Powershell")
-Lb1.insert(2, "SQL")
-Lb1.selection_set( first = 0 )
+lb_Language = Listbox(fr_menu, height=3,selectmode='SINGLE')
+lb_Language.insert(1, "Python")
+lb_Language.insert(2, "Powershell")
+lb_Language.insert(2, "SQL")
+lb_Language.selection_set( first = 0 )
 
 
 chk_answered = Checkbutton(fr_menu, text='answered', variable = CheckVar1, onvalue='is_answered', offvalue='off')
@@ -270,7 +270,7 @@ btn_save.grid(row=1, column=0, sticky="ew", padx=5, pady=5)
 btn_print.grid(row=2, column=0, sticky="ew", padx=5, pady=5)
 btn_email.grid(row=3, column=0, sticky="ew", padx=5, pady=5)
 lbl_option.grid(row=4, column=0)
-Lb1.grid(row=5, column=0, sticky="ew", padx=5, pady=5)
+lb_Language.grid(row=5, column=0, sticky="ew", padx=5, pady=5)
 
 lbl_column.grid(row=6, column=0, sticky="ew", padx=5)
 chk_answered.grid(row=7, column=0, sticky="w", padx=5)
